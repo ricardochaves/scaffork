@@ -1,0 +1,79 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata: 
+  name: PROJECT_NAME-deploy
+spec:
+  selector:
+    matchLabels:
+      name: PROJECT_NAME-deploy
+  template:
+    metadata:
+      labels:
+        project: statue-of-liberty-dev
+        name: PROJECT_NAME-deploy
+        environment: dev
+        tier: backend
+    spec:
+      containers:
+        - name: PROJECT_NAME
+          image: gcr.io/statue-of-liberty-dev/PROJECT_NAME:dev
+          command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+          envFrom:
+           - configMapRef:
+               name: PROJECT_NAME-configmap  # secret must have been created
+          ports:
+           - name: http
+             containerPort: 8000
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            httpGet:
+              path: /api/
+              port: 8000
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            httpGet:
+              path: /api/
+              port: 8000
+        - image: b.gcr.io/cloudsql-docker/gce-proxy:1.11
+          name: cloudsql-proxy
+          command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                    "-instances=statue-of-liberty-dev:us-central1:pentagon-dev=tcp:5432",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-oauth-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+            - name: cloudsql
+              mountPath: /cloudsql
+      # [START volumes]
+      volumes:
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir:
+      # [END volumes] 
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: PROJECT_NAME-service
+  labels:
+    name: PROJECT_NAME-service
+    project: statue-of-liberty-dev
+spec:
+  selector: 
+    name: PROJECT_NAME-deploy
+  type: NodePort
+  ports:
+    - name: http
+      port: 8081
+      targetPort: 8000

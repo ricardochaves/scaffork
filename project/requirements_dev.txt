@@ -1,0 +1,11 @@
+-r requirements.txt
+ptvsd
+pylint
+autopep8
+coverage
+pre-commit
+tox
+pytest
+flake8-django
+pylint-django
+black

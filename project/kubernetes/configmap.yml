@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: PROJECT_NAME-configmap
+data:
+  PYTHONUNBUFFERED: '1'
+  DB_ENGINER: django.db.backends.postgresql
+  DB_DATA_BASE: PROJECT_NAME_dev
+  DB_USER: PROJECT_NAME
+  DB_PASSWORD: 123@mudar
+  DB_HOST: "127.0.0.1"
+  DB_PORT: "5432"
+  GOOGLE_APPLICATION_CREDENTIALS: PROJECT_NAME-gcp-credentials.json

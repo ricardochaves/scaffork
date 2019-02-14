@@ -1,0 +1,37 @@
+sudo: false
+language: python
+services:
+  - postgresql
+env:
+  matrix:
+    - DJANGO_SETTINGS_MODULE=PROJECT_NAME.settings DB_DATA_BASE=travis_ci_test DB_USER=postgres DB_HOST=localhost DB_PORT=5432
+python:
+  - "3.7-dev"
+install: 
+  - pip install tox-travis
+  - pip install -r requirements_dev.txt
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  - psql -c 'create database travis_ci_test;' -U postgres
+
+script: 
+  - coverage run --source='.' manage.py test
+  - coverage xml
+after_script:
+  - ./cc-test-reporter after-build -d -t coverage.py --exit-code $TRAVIS_TEST_RESULT
+
+before_deploy:
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
+  - source /home/travis/google-cloud-sdk/path.bash.inc
+  - gcloud --quiet version
+  - gcloud --quiet components update
+  - gcloud --quiet components update kubectl
+
+deploy:
+- provider: script
+  script: chmod +x gcloud/deploy-develop.sh && gcloud/deploy-develop.sh
+  skip_cleanup: true
+  on:
+    branch: develop
