@@ -5,6 +5,9 @@ class Data:
     def __init__(self, inquirer_data: dict):
         self.data = inquirer_data
 
+    def project_name(self) -> str:
+        return self.data["project_name"]
+
     def project_dir(self) -> str:
         return self.data["project_dir"]
 

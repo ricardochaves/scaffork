@@ -10,7 +10,7 @@ from travis import Travis
 
 def start(data: Data):
 
-    start_deploy(data.repo_name(), data.project_dir())
+    start_deploy(data.project_name(), data.project_dir())
 
     if data.use_git_hub():
         github = GitHub(data)

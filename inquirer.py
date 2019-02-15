@@ -1,10 +1,9 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from PyInquirer import prompt
-
 from controller import start
 from data import Data
+from PyInquirer import prompt
 
 questions = [
     {"type": "input", "name": "project_name", "message": "What is the name of the project?"},
@@ -23,6 +22,7 @@ questions = [
         "type": "confirm",
         "name": "git_hub_private_repo",
         "message": "Is the repository private?",
+        "when": lambda answers: answers["use_git_hub"],
         "default": True,
     },
     {
