@@ -5,6 +5,15 @@ class Data:
     def __init__(self, inquirer_data: dict):
         self.data = inquirer_data
 
+    def repo_origem_ower(self) -> str:
+        return self.data["project_origem"].split("/")[0]
+
+    def repo_origem_name(self) -> str:
+        return self.data["project_origem"].split("/")[1]
+
+    def project_name(self) -> str:
+        return self.data["project_name"]
+
     def project_dir(self) -> str:
         return self.data["project_dir"]
 

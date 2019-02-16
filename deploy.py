@@ -1,64 +1,50 @@
 import os
-import shutil
 import subprocess
 
-
-def start_deploy(project: str, target_dir: str):
-
-    if os.path.exists(target_dir):
-        shutil.rmtree(target_dir)
-
-    shutil.copytree("./project", target_dir)
-
-    os.rename(f"{target_dir}/PROJECT_NAME", f"{target_dir}/{project}")
-
-    subprocess.call(
-        [f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/.travis.yml"], shell=True
-    )
-    subprocess.call([f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/manage.py"], shell=True)
-    subprocess.call(
-        [f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/{project}/settings.py"], shell=True
-    )
-    subprocess.call(
-        [f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/{project}/urls.py"], shell=True
-    )
-    subprocess.call(
-        [f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/{project}/wsgi.py"], shell=True
-    )
-    subprocess.call([f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/README.md"], shell=True)
-    subprocess.call([f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/tox.ini"], shell=True)
-    subprocess.call(
-        [f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/kubernetes/all.yml"], shell=True
-    )
-    subprocess.call(
-        [f"sed -i -e 's/PROJECT_NAME/{project}/g' {target_dir}/kubernetes/configmap.yml"],
-        shell=True,
-    )
-
-    os.remove(f"{target_dir}/.travis.yml-e")
-    os.remove(f"{target_dir}/manage.py-e")
-    os.remove(f"{target_dir}/{project}/urls.py-e")
-    os.remove(f"{target_dir}/{project}/wsgi.py-e")
-    os.remove(f"{target_dir}/README.md-e")
-    os.remove(f"{target_dir}/tox.ini-e")
-    os.remove(f"{target_dir}/kubernetes/all.yml-e")
-    os.remove(f"{target_dir}/kubernetes/configmap.yml-e")
+from data import Data
 
 
-def update_travis_badge(value: str, target_dir: str):
-    subprocess.call([f"sed -i -e 's/TRAVIS_BADGE/{value}/g' {target_dir}/README.md"], shell=True)
-    os.remove(f"{target_dir}/README.md-e")
+class AdminFiles:
 
+    data: Data
 
-def update_code_climate_badge(coverage: str, maintainability: str, target_dir: str):
-    subprocess.call(
-        [f"sed -i -e 's/CODECLIMATE_COVERAGE/{coverage}/g' {target_dir}/README.md"], shell=True
-    )
-    os.remove(f"{target_dir}/README.md-e")
+    def __init__(self, data: Data):
 
-    subprocess.call(
-        [f"sed -i -e 's/CODECLIMATE_MAINTAINABILITY/{maintainability}/g' {target_dir}/README.md"],
-        shell=True,
-    )
-    os.remove(f"{target_dir}/README.md-e")
+        self.data = data
 
+    def start_deploy(self):
+
+        os.rename(
+            f"{self.data.project_dir()}/{self.data.repo_origem_name()}",
+            f"{self.data.project_dir()}/{self.data.project_name()}",
+        )
+
+        subprocess.call(
+            [
+                f"find {self.data.project_dir()}/{self.data.project_name()}/. -type f|xargs perl -pi -e 's/PROJECT_NAME/{self.data.project_name()}/g'"
+            ],
+            shell=True,
+        )
+
+    def update_travis_badge(self, value: str):
+        subprocess.call(
+            [
+                f"sed -i '' 's/TRAVIS_BADGE/{value}/g' {self.data.project_dir()}/{self.data.project_name()}/README.md"
+            ],
+            shell=True,
+        )
+
+    def update_code_climate_badge(self, coverage: str, maintainability: str):
+        subprocess.call(
+            [
+                f"sed -i '' 's/CODECLIMATE_COVERAGE/{coverage}/g' {self.data.project_dir()}/{self.data.project_name()}/README.md"
+            ],
+            shell=True,
+        )
+
+        subprocess.call(
+            [
+                f"sed -i '' 's/CODECLIMATE_MAINTAINABILITY/{maintainability}/g' {self.data.project_dir()}/{self.data.project_name()}/README.md"
+            ],
+            shell=True,
+        )
