@@ -1,5 +1,7 @@
+import os
 import subprocess
 
+import git
 import requests
 
 from data import Data
@@ -75,3 +77,10 @@ class GitHub:
             return f"https://api.github.com/orgs/{self.data.repo_ower()}/repos"
         else:
             return "https://api.github.com/user/repos"
+
+    def clone_repo(self):
+        if not os.path.exists(self.data.project_dir()):
+            os.mkdir(self.data.project_dir())
+        git.Git(self.data.project_dir()).clone(
+            f"git@github.com:{self.data.repo_origem_ower()}/{self.data.repo_origem_name()}.git"
+        )

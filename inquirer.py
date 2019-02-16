@@ -1,11 +1,17 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from controller import start
-from data import Data
 from PyInquirer import prompt
 
+from controller import start
+from data import Data
+
 questions = [
+    {
+        "type": "input",
+        "name": "project_origem",
+        "message": "Please enter the base repository (repo_ower/repo_name)",
+    },
     {"type": "input", "name": "project_name", "message": "What is the name of the project?"},
     {
         "type": "input",
