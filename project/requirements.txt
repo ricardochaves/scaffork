@@ -1,9 +1,0 @@
-django
-gunicorn
-psycopg2
-
-django-redis
-
-markdown
-djangorestframework
-django-filter

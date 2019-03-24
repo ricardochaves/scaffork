@@ -2,6 +2,7 @@
 omit = 
     .venv/*
     .tox/*
+    Applications/*
     
 [report]
 show_missing = True

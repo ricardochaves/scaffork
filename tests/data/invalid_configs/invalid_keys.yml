@@ -1,0 +1,24 @@
+version: "1"
+project:
+  name:
+  source:
+  dir:
+github:
+  repo:
+  is_private: False
+  description: "repository description"
+  ower:
+  is_organization: False
+  has_issues: False
+  has_projects: False
+  has_wiki: False
+  token: "my personal github token"
+
+travis:
+  envs:
+    - name: "value"
+
+codeclimate:
+  maintainability:
+  coverage:
+  token: "my code climate token"
