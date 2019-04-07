@@ -1,0 +1,25 @@
+version: "1"
+project:
+  source: "url to clone"
+  name: "my_project_name"
+  dir: "./tmp"
+
+github:
+  repo: "repository name"
+  is_private: True
+  description: "repository description"
+  owner: "user_account"
+  is_organization: True
+  has_issues: True
+  has_projects: True
+  has_wiki: True
+  token: "my personal github token"
+
+travis:
+  envs:
+    - name: "value"
+
+codeclimate:
+  maintainability: True
+  coverage: True
+  token: "my code climate token"
