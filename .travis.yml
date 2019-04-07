@@ -26,7 +26,7 @@ jobs:
         - TOXENV=py37
       deploy:
         provider: pypi
-        user: jsmpypi
+        user: scaffork
         password: $PYPIPASSWORD
         on:
           branch: master
@@ -40,7 +40,7 @@ jobs:
         - TOXENV=py37
       deploy:
         provider: pypi
-        user: jsmpypi
+        user: scaffork
         password: $PYPIPASSWORDTEST
         on:
           branch: develop
