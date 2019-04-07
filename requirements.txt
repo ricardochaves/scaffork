@@ -1,6 +1,6 @@
-PyInquirer
+PyInquirer>=1.0.3
 prompt_toolkit==1.0.14
-travispy
-gitpython
-pyyaml
+travispy>=0.3.5
+gitpython>=2.1.11
+pyyaml>=3.13
 setuptools
